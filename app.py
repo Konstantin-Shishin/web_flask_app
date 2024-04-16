@@ -26,12 +26,7 @@ UID = {
 # Определение маршрута для главной страницы
 @app.route('/')
 def index():
-    return render_template('page.html', context=UID)
-
-# Определение маршрута для страницы с таблицей пользователей
-@app.route('/table_users')
-def table_users():
-    return render_template('users.html')
+    return render_template('users.html', users=UID)
 
 # Определение маршрута для отображения информации о конкретном пользователе
 @app.route('/user/<id>')
@@ -41,13 +36,6 @@ def user(id):
     else:
         return 'Такого пользователя не существует'
 
-# Определение маршрута для отображения информации о всех пользователях
-@app.route('/users')
-def users():
-    a = ''
-    for i in range(1, len(UID) + 1):
-        a += f"Имя: {UID[str(i)]['name']}, Город: {UID[str(i)]['city']}, Возраст: {UID[str(i)]['age']}\n"
-    return a
 
 # Определение маршрута для добавления нового пользователя
 @app.route('/add_user')

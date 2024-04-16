@@ -4,12 +4,15 @@
     </head>
 
     <body>
+        <!-- Начало таблицы -->
         <table border="1">
-            <tr><th>Имя</th><th>Фамилия</th><th>Возраст</th><th>Город</th></tr>
-            <tr><th>Дмитрий</th><th>Иванов</th><th>16</th><th>Екатеринбург</th></tr>
-            <tr><th>Анна</th><th>Фомина</th><th>17</th><th>Москва</th></tr>
-            <tr><th>Андрей</th><th>Петров</th><th>17</th><th>Челябинск</th></tr>
-        </table>          
+            <!-- Заголовки столбцов таблицы -->
+            <tr><th>name</th><th>town</th><th>age</th></tr>
+            <!-- Цикл для каждого пользователя в списке пользователей -->
+            {% for user in users.values() %}
+                <!-- Создание строки таблицы для каждого пользователя -->
+                <tr><td>{{ user["name"] }}</td> <td>{{ user["city"] }}</td> <td>{{ user["age"] }}</td></tr>
+            {% endfor %}
+        </table>        
     </body>
-
 </html>

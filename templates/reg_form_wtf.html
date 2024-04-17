@@ -1,0 +1,32 @@
+<html>
+
+    <head></head>
+
+    <body>
+        <div>
+            <h2>Registration Form</h2> <!-- Заголовок формы регистрации -->
+            {% for field, errors in form.errors.items() %} <!-- Для высвечивания ошибок валидации -->
+                {{ ', '.join(errors) }}
+            {% endfor %}
+            <form method="POST"> <!-- Форма отправки данных методом POST -->
+                <div>
+                    {{ form.name.label }} {{ form.name() }} <!-- Поле ввода имени с меткой -->
+                </div>
+                <div>
+                    {{ form.email.label }} {{ form.email() }} <!-- Поле ввода email с меткой -->
+                </div>
+                <div>
+                    {{ form.phone.label }} {{ form.phone() }} <!-- Поле ввода телефона с меткой -->
+                </div>
+                <div>
+                    {{ form.address.label }} {{ form.address() }} <!-- Поле ввода адреса с меткой -->
+                </div>
+                <div>
+                    {{ form.submit() }} <!-- Кнопка отправки формы -->
+                </div>
+            </form>
+        </div>
+    </body>
+
+</html>
+

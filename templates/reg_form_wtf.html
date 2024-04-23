@@ -22,6 +22,15 @@
                     {{ form.address.label }} {{ form.address() }} <!-- Поле ввода адреса с меткой -->
                 </div>
                 <div>
+                    {{form.pol.label}} <!-- Метка для выбора пола -->
+                    {% for subfield in form.pol %} <!-- Итерация по вариантам выбора пола -->
+                        <tr>
+                            <td>{{ subfield }}</td> <!-- Радиокнопка выбора пола -->
+                            <td>{{ subfield.label }}</td> <!-- Метка для радиокнопки -->
+                        </tr>
+                    {% endfor %}
+                </div>
+                <div>
                     {{ form.submit() }} <!-- Кнопка отправки формы -->
                 </div>
             </form>

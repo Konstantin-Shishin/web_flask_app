@@ -3,18 +3,18 @@ from flask import Flask, render_template
 from flask_wtf import FlaskForm
 
 # Импорт классов полей из модуля wtforms
-from wtforms import StringField, IntegerField, SubmitField, TelField
+from wtforms import StringField, IntegerField, SubmitField, TelField, RadioField
 
 # Импорт валидаторов из модуля wtforms.validators
-from wtforms.validators import InputRequired, Email
+from wtforms.validators import InputRequired
 
 # Создаем экземпляр Flask с названием приложения
 app = Flask(__name__)
 
 # Определение класса формы регистрации
 class RegistrationForm(FlaskForm):
-    # Поле для ввода email с валидацией наличия ввода и соответствия формату email
-    email = StringField(validators=[InputRequired(), Email()])
+    # Поле для ввода email с валидацией наличия ввода
+    email = StringField(validators=[InputRequired()])
     
     # Поле для ввода телефона с валидацией наличия ввода
     phone = TelField(validators=[InputRequired()])
@@ -24,6 +24,9 @@ class RegistrationForm(FlaskForm):
     
     # Поле для ввода адреса без валидации
     address = StringField()
+
+    #Поле радио-кнопки для выбора пола
+    pol = RadioField(label='Пол', choices=[(0 ,'Мужской' ), (1, 'Женский')])
     
     # Поле для ввода индекса без валидации
     index = IntegerField()
@@ -49,10 +52,10 @@ def registration():
     # Проверяем, была ли форма отправлена и прошла ли валидацию
     if form.validate_on_submit():
         # Если форма прошла валидацию, получаем данные из полей формы
-        email, phone, name, address = form.email.data, form.phone.data, form.name.data, form.address.data
+        email, phone, name, address, pol= form.email.data, form.phone.data, form.name.data, form.address.data, form.pol.data
         
         # Выводим данные формы в консоль для отладки
-        print(email, phone, name, address)
+        print(email, phone, name, address, pol)
 
         # Возвращаем приветственное сообщение с использованием имени пользователя
         return f'Hello {name} welcome to our site!'

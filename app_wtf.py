@@ -11,6 +11,39 @@ from wtforms.validators import InputRequired
 # Создаем экземпляр Flask с названием приложения
 app = Flask(__name__)
 
+# Словарь пользователей
+UID = {
+        '1':
+    {
+    'name': 'Евгений',
+    'city': 'Красноярск',
+    'age': 14,
+    'is_active': True,
+    'email': 'yuyuy@mail.ru',
+    'pol': 'Мужской',
+    'phone': 789653223
+    },
+        '2': 
+    {
+    'name': 'Иван',
+    'city': 'Находка',
+    'age': 16,
+    'is_active': True,
+    'email': 'yuyuy@mail.ru',
+    'pol': 'Мужской',
+    'phone': 789653224
+    },
+       '3': {
+    'name': 'Софья',
+    'city': 'Калининград',
+    'age': 15,
+    'is_active': False,
+    'email': 'yuyuy@mail.ru',
+    'pol': 'Женский',
+    'phone': 789653225
+    }
+    }
+
 # Определение класса формы регистрации
 class RegistrationForm(FlaskForm):
     # Поле для ввода email с валидацией наличия ввода
@@ -21,6 +54,9 @@ class RegistrationForm(FlaskForm):
     
     # Поле для ввода имени с валидацией наличия ввода
     name = StringField(validators=[InputRequired()])
+
+    # Поле для ввода возраста
+    age = IntegerField()
     
     # Поле для ввода адреса без валидации
     address = StringField()
@@ -37,11 +73,14 @@ class RegistrationForm(FlaskForm):
     # Кнопка отправки формы
     submit = SubmitField(label=('Submit'))
 
-
 # Обработчик маршрута для главной страницы
 @app.route('/')
 def index():
     return 'Главная страница'
+
+@app.route('/users')
+def userss():
+    return render_template('users.html', users = UID)
 
 # Обработчик маршрута для страницы регистрации
 @app.route('/registration', methods=['GET', 'POST'])
@@ -52,10 +91,20 @@ def registration():
     # Проверяем, была ли форма отправлена и прошла ли валидацию
     if form.validate_on_submit():
         # Если форма прошла валидацию, получаем данные из полей формы
-        email, phone, name, address, pol= form.email.data, form.phone.data, form.name.data, form.address.data, form.pol.data
+        email, phone, name, address, pol, age = form.email.data, form.phone.data, form.name.data, form.address.data, form.pol.data, form.age.data 
         
         # Выводим данные формы в консоль для отладки
-        print(email, phone, name, address, pol)
+        print(email, phone, name, address, pol, age)
+
+        # Добавление пользователя в словарь
+        UID[str(int(max(UID))+1)]= {
+        'name': name,
+        'city': address,
+        'age': age,
+        'email': email,
+        'pol': pol,
+        'phone': phone
+        }   
 
         # Возвращаем приветственное сообщение с использованием имени пользователя
         return f'Hello {name} welcome to our site!'

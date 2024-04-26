@@ -8,79 +8,75 @@ from wtforms import StringField, IntegerField, SubmitField, TelField, RadioField
 # Импорт валидаторов из модуля wtforms.validators
 from wtforms.validators import InputRequired
 
+# Импорт модуля SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
+
 # Создаем экземпляр Flask с названием приложения
 app = Flask(__name__)
 
-# Словарь пользователей
-UID = {
-        '1':
-    {
-    'name': 'Евгений',
-    'city': 'Красноярск',
-    'age': 14,
-    'is_active': True,
-    'email': 'yuyuy@mail.ru',
-    'pol': 'Мужской',
-    'phone': 789653223
-    },
-        '2': 
-    {
-    'name': 'Иван',
-    'city': 'Находка',
-    'age': 16,
-    'is_active': True,
-    'email': 'yuyuy@mail.ru',
-    'pol': 'Мужской',
-    'phone': 789653224
-    },
-       '3': {
-    'name': 'Софья',
-    'city': 'Калининград',
-    'age': 15,
-    'is_active': False,
-    'email': 'yuyuy@mail.ru',
-    'pol': 'Женский',
-    'phone': 789653225
-    }
-    }
+# Установка URI для подключения к базе данных
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+
+# Создаем объект базы данных
+db = SQLAlchemy(app)
+
+# Класс Пользователя для базы данных
+class User(db.Model):
+    #Указываем им таблицы
+    __tablename__ = 'users'
+
+    # Заводим поля
+    UID = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    city = db.Column(db.String(80))
+    age = db.Column(db.Integer)
+    is_active = db.Column(db.Boolean)
+    email = db.Column(db.String(120))
+    pol = db.Column(db.String(20))
+    phone = db.Column(db.Integer)
+
+    # Инициализатор для создания объектов класса
+    def __init__(self, name, city, age, is_active, email, pol, phone):
+        self.name = name
+        self.city = city
+        self.age = age
+        self.is_active = is_active
+        self.email = email
+        self.pol = pol
+        self.phone = phone
+
+    # Метод для текстового представления объекта Пользователя
+    def __str__(self):
+        return f'<Пользователь {self.name}, {self.city}, {self.age}>'
 
 # Определение класса формы регистрации
-class RegistrationForm(FlaskForm):
-    # Поле для ввода email с валидацией наличия ввода
+class RegistrationForm(FlaskForm):  
+    # Заводим поля
     email = StringField(validators=[InputRequired()])
-    
-    # Поле для ввода телефона с валидацией наличия ввода
     phone = TelField(validators=[InputRequired()])
-    
-    # Поле для ввода имени с валидацией наличия ввода
     name = StringField(validators=[InputRequired()])
-
-    # Поле для ввода возраста
     age = IntegerField()
-    
-    # Поле для ввода адреса без валидации
     address = StringField()
-
-    #Поле радио-кнопки для выбора пола
-    pol = RadioField(label='Пол', choices=[(0 ,'Мужской' ), (1, 'Женский')])
-    
-    # Поле для ввода индекса без валидации
-    index = IntegerField()
-    
-    # Поле для ввода комментария без валидации
-    comment = StringField()
-    
-    # Кнопка отправки формы
+    pol = RadioField(label='Пол', choices=[(0 ,'Мужской' ), (1, 'Женский')]) 
+    # Поле кнопки отправки формы
     submit = SubmitField(label=('Submit'))
+
 
 # Обработчик маршрута для главной страницы
 @app.route('/')
 def index():
-    return 'Главная страница'
+    return render_template('main.html')
 
+# Обработчик маршрута для страницы пользователей с таблицей
 @app.route('/users')
-def userss():
-    return render_template('users.html', users = UID)
+def users():
+    #SELECT запрос на получение всей таблицы (список записей)
+    people = User.query.all() 
+    # Вывод полученных Пользователей в консоль
+    for user in users:
+        print(user)
+    # Возвращаем html c таблицей
+    return render_template('users.html', users = people)
 
 # Обработчик маршрута для страницы регистрации
 @app.route('/registration', methods=['GET', 'POST'])
@@ -91,23 +87,15 @@ def registration():
     # Проверяем, была ли форма отправлена и прошла ли валидацию
     if form.validate_on_submit():
         # Если форма прошла валидацию, получаем данные из полей формы
-        email, phone, name, address, pol, age = form.email.data, form.phone.data, form.name.data, form.address.data, form.pol.data, form.age.data 
-        
+        email, phone, name, address, pol, age = form.email.data, form.phone.data, form.name.data, form.address.data, form.pol.data, form.age.data        
         # Выводим данные формы в консоль для отладки
         print(email, phone, name, address, pol, age)
-
-        # Добавление пользователя в словарь
-        UID[str(int(max(UID))+1)]= {
-        'name': name,
-        'city': address,
-        'age': age,
-        'email': email,
-        'pol': pol,
-        'phone': phone
-        }   
-
-        # Возвращаем приветственное сообщение с использованием имени пользователя
-        return f'Hello {name} welcome to our site!'
+        # Создаем новый объект Пользователя
+        new_user = User(name=name, city=address, age=age, email=email,pol='Мужской' if pol == 0 else 'Женский', phone=phone, is_active=True)
+        db.session.add(new_user)  # Добавляем Пользователя в базу данных
+        db.session.commit()  # Фиксация изменений в базе данных
+        # Возвращаем приветственное сообщение (html) с использованием имени пользователя
+        return render_template('success_reg.html', name=name)
     
     # Если форма не была отправлена или не прошла валидацию,
     # отображаем HTML-шаблон с формой регистрации,

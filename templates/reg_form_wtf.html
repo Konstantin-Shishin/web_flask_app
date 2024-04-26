@@ -3,8 +3,11 @@
     <head></head>
 
     <body>
+        <a href="{{ url_for('index') }}">Главная</a>
+        <a href="{{ url_for('users') }}">Пользователи</a>
+        <a href="{{ url_for('registration') }}">Зарегистрироваться</a>
         <div>
-            <h2>Registration Form</h2> <!-- Заголовок формы регистрации -->
+            <h2>Форма регистрации</h2> <!-- Заголовок формы регистрации -->
             {% for field, errors in form.errors.items() %} <!-- Для высвечивания ошибок валидации -->
                 {{ ', '.join(errors) }}
             {% endfor %}
@@ -13,7 +16,7 @@
                     {{ form.name.label }} {{ form.name() }} <!-- Поле ввода имени с меткой -->
                 </div>
                 <div>
-                    {{ form.age.label }} {{ form.age() }}
+                    {{ form.age.label }} {{ form.age() }} <!-- Поле ввода возраста с меткой -->
                 </div>
                 <div>
                     {{ form.email.label }} {{ form.email() }} <!-- Поле ввода email с меткой -->

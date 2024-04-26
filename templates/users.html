@@ -4,6 +4,12 @@
     </head>
 
     <body>
+        <!-- Гиперссылки на страницы сайта -->
+        <a href="{{ url_for('index') }}">Главная</a>
+        <a href="{{ url_for('users') }}">Пользователи</a>
+        <a href="{{ url_for('registration') }}">Зарегистрироваться</a>
+        <!-- Заголовок страницы -->
+        <h1>Пользователи</h1>
         <!-- Начало таблицы -->
         <table border="1">
             <!-- Заголовки столбцов таблицы -->
@@ -17,16 +23,16 @@
                 <th>Activity</th>
             </tr>
             <!-- Цикл для каждого пользователя в списке пользователей -->
-            {% for user in users.values() %}
+            {% for user in users %}
                 <!-- Создание строки таблицы для каждого пользователя -->
                 <tr>
-                    <td>{{ user["name"] }}</td>
-                    <td>{{ user["city"] }}</td>
-                    <td>{{ user["age"] }}</td>
-                    <td>{{ user['email'] }}</td>
-                    <td>{{ user['pol'] }}</td>
-                    <td>{{ user['phone'] }}</td>
-                    {% if user['is_active'] %}
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.city }}</td>
+                    <td>{{ user.age }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.pol }}</td>
+                    <td>{{ user.phone }}</td>
+                    {% if user.is_active %}
                         <td>Активен</td>
                     {% else %}
                         <td>Не активен</td>

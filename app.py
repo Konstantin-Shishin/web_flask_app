@@ -73,7 +73,7 @@ def users():
     #SELECT запрос на получение всей таблицы (список записей)
     people = User.query.all() 
     # Вывод полученных Пользователей в консоль
-    for user in users:
+    for user in people:
         print(user)
     # Возвращаем html c таблицей
     return render_template('users.html', users = people)

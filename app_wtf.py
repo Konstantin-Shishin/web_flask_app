@@ -123,7 +123,7 @@ def registration():
 
         # Возвращаем приветственное сообщение с использованием имени пользователя
         # return f'Hello {name} welcome to our site! {filename}'
-        return render_template('welcome.html', fname = filename)
+        return render_template('welcome.html', name = name, fname = filename)
     
     # Если форма не была отправлена или не прошла валидацию,
     # отображаем HTML-шаблон с формой регистрации,
